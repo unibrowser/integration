@@ -1,6 +1,6 @@
 # Unibrowser Integration
 
-**NODE**: Requires `docker` to be installed
+**NOTE**: Requires `docker` to be installed
 
 ## Building Unibrowser
 The Dockerfiles contains in this repository will test and build the three parts of Unibrowser: the scraper, the backend server, and the frontend web application. To test and build each component, run the following commands:
