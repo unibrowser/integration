@@ -1,0 +1,24 @@
+FROM node:8.12.0-alpine AS test
+
+WORKDIR /src
+
+RUN apk add --update \
+        git \
+    && git clone https://github.com/unibrowser/unibrowser-ui.git \
+    && cd unibrowser-ui \
+    && npm install \
+    && npm test
+
+FROM node:8.12.0-alpine AS build
+
+WORKDIR /src/unibrowser-ui
+
+COPY --from=test /src/unibrowser-ui /src/unibrowser-ui
+
+RUN npm run build
+
+FROM nginx:1.13.9-alpine
+COPY --from=build /src/unibrowser-ui/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /src/unibrowser-ui/dist/ /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

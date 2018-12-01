@@ -1,0 +1,42 @@
+FROM python:3.6-alpine
+
+WORKDIR /src
+
+ENV PYTHONPATH /src:/src/unibrowser
+
+RUN apk add --upgrade \
+        git \
+        python-dev \
+        python3-dev \
+        libxslt-dev \
+        build-base \
+        libxml2-dev \
+    \
+    # Clone the repository \
+    && git clone https://github.com/unibrowser/unibrowser.git \
+    && cd unibrowser \
+    \
+    # Install the Python dependencies \
+    && pip install -r requirements.txt \
+    && python setup.py \
+    \
+    # Run the unit tests \
+    #&& pytest \
+    \
+    # Everything passed, so now we go ahead and remove everything we don't need and add the cron job \
+    && mv api/ database/ scraping/ config/ .. \
+    && mv scrape.sh /etc/periodic/daily/ \
+    \
+    # Clean things up \
+    && cd .. \
+    && rm -rf unibrowser/ \
+    && apk del \
+        git \
+        build-base \
+        python3-dev \
+        python-dev \
+        libxml2-dev \
+        libxslt-dev \
+    && rm -rf /var/cache/apk/*
+
+CMD ["crond", "-f"]

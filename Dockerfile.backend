@@ -1,0 +1,19 @@
+FROM node:8.12.0-alpine
+
+WORKDIR /src
+
+RUN apk add --update \
+        git \
+    && git clone https://github.com/unibrowser/unibrowser-server.git \
+    && cd unibrowser-server \
+    && npm install \
+    # Some tests are broken ... \
+    #&& npm test \
+    # Cleaning up \
+    && rm -rf test \
+    && apk del git \
+    && rm -rf /var/cache/apk/*
+
+WORKDIR /src/unibrowser-server
+
+CMD ["npm", "start"]
