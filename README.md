@@ -12,7 +12,7 @@ The Dockerfiles contains in this repository will test and build the three parts 
 > docker build . -t unibrowser/frontend -f Dockerfile.frontend
 ```
 
-# Running Unibrowser
+## Running Unibrowser
 Once the components have been built, you can run Unibrowser by issues the following commands.
 
 ```text
